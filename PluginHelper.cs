@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -8,10 +9,10 @@ namespace IL2CPPAutoConfigReload;
 public class PluginHelper
 {
     public BasePlugin Plugin { get; }
+    public string ConfigFilePath => Config.ConfigFilePath;
 
     private ConfigFile Config => Plugin.Config;
-    private string ConfigFilePath => Config.ConfigFilePath;
-    private byte[] LastHash = [];
+    private byte[] LastHash = Array.Empty<byte>();
 
     public PluginHelper(BasePlugin plugin)
     {
