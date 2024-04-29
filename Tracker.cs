@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -16,9 +17,17 @@ public class Tracker
             UpdatePluginList();
             foreach (var helper in PluginHelpers)
             {
-                if (helper.NeedToReloadConfig())
+                try
                 {
-                    helper.ReloadConfig();
+                    if (helper.NeedToReloadConfig())
+                    {
+                        helper.ReloadConfig();
+                    }
+                }
+                catch (Exception e)
+                {
+                    // Catch all exceptions to prevent a bad config or file lock from crashing the plugin
+                    Plugin.Logger.LogError(e.ToString());
                 }
             }
 
