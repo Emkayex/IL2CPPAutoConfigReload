@@ -11,8 +11,13 @@ public class Tracker
     public void MainLoop()
     {
         // Since this will run on a separate thread, run the following loop infinitely
+        var helpersToRemove = new List<PluginHelper>();
+        var helpersToAdd = new List<PluginHelper>();
         while (true)
         {
+            helpersToRemove.Clear();
+            helpersToAdd.Clear();
+
             // Search for new plugins and then go through each plugin and reload the config file if necessary
             UpdatePluginList();
             foreach (var helper in PluginHelpers)
@@ -21,7 +26,9 @@ public class Tracker
                 {
                     if (helper.NeedToReloadConfig())
                     {
-                        helper.ReloadConfig();
+                        var newHelper = helper.ReloadConfig();
+                        helpersToRemove.Add(helper);
+                        helpersToAdd.Add(newHelper);
                     }
                 }
                 catch (Exception e)
@@ -29,6 +36,16 @@ public class Tracker
                     // Catch all exceptions to prevent a bad config or file lock from crashing the plugin
                     Plugin.Logger.LogError(e.ToString());
                 }
+            }
+
+            if (helpersToRemove.Count > 0)
+            {
+                foreach (var helper in helpersToRemove)
+                {
+                    PluginHelpers.Remove(helper);
+                }
+
+                PluginHelpers.AddRange(helpersToAdd);
             }
 
             // Wait 3 seconds between reloading configs to avoid constantly reading from the disk
