@@ -21,7 +21,7 @@ public class Plugin : BasePlugin
             tracker.MainLoop();
         });
 
-        // Print a message right away to indicate the plugin is loaded.
+        // Print a message right away to indicate the plugin is loaded
         Log.LogInfo($"Plugin {MyPluginInfo.PLUGIN_GUID} is loaded.");
     }
 }
