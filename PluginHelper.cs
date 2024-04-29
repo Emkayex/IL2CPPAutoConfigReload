@@ -49,5 +49,6 @@ public class PluginHelper
         // There are definitely ways this could be optimized to avoid computing hashes twice, but I'm not going to worry since configs won't be changing often
         LastHash = CalculateConfigHash();
         Config.Reload();
+        IL2CPPAutoConfigReload.Plugin.Logger.LogInfo($"Reloaded from {ConfigFilePath}");
     }
 }
