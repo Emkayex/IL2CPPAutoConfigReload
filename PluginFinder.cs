@@ -11,7 +11,7 @@ public class PluginFinder
         var pluginInfos = IL2CPPChainloader.Instance.Plugins.Values.Where(x => x.Instance is BasePlugin).ToList();
         foreach (var pluginInfo in pluginInfos)
         {
-            // Get the instance of the plugin so the bound ConfigEntry objects can be discovered
+            // Get the instance of the plugin and cast it to a BasePlugin object
             var basePlugin = (BasePlugin)pluginInfo.Instance;
             if (basePlugin is not null)
             {
