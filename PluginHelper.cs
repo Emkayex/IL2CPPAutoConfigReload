@@ -43,21 +43,13 @@ public class PluginHelper
         return !newHash.SequenceEqual(LastHash);
     }
 
-    public PluginHelper ReloadConfig()
+    public void ReloadConfig()
     {
         // Calculate and save a new hash, and then reload the actual config settings
         // There are definitely ways this could be optimized to avoid computing hashes twice, but I'm not going to worry since configs won't be changing often
         LastHash = CalculateConfigHash();
         Config.Reload();
 
-        // Also unload and reload the plugin in case any settings only apply at startup
-        Plugin.Unload();
-        Plugin.Load();
-
         IL2CPPAutoConfigReload.Plugin.Logger.LogInfo($"Reloaded from {ConfigFilePath}");
-
-        return Clone();
     }
-
-    private PluginHelper Clone() => new(Plugin);
 }
