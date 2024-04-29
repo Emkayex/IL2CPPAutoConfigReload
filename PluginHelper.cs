@@ -1,0 +1,46 @@
+using System.IO;
+using System.Linq;
+using System.Security.Cryptography;
+using BepInEx.Configuration;
+using BepInEx.Unity.IL2CPP;
+
+namespace IL2CPPAutoConfigReload;
+public class PluginHelper
+{
+    public BasePlugin Plugin { get; }
+
+    private ConfigFile Config => Plugin.Config;
+    private string ConfigFilePath => Config.ConfigFilePath;
+    private byte[] LastHash = [];
+
+    public PluginHelper(BasePlugin plugin)
+    {
+        _ = this; // Remove IDE warning about using a primary constructor
+        Plugin = plugin;
+    }
+
+    private byte[] CalculateConfigHash()
+    {
+        // Read the bytes from the config file
+        var cfgBytes = File.ReadAllBytes(ConfigFilePath);
+
+        // Calculate an MD5 hash for the bytes (since this isn't being used for cryptographic purposes, this is acceptable)
+        using var md5 = MD5.Create();
+        return md5.ComputeHash(cfgBytes);
+    }
+
+    public bool NeedToReloadConfig()
+    {
+        // The config should be reloaded if the new hash doesn't match the old one
+        var newHash = CalculateConfigHash();
+        return !newHash.SequenceEqual(LastHash);
+    }
+
+    public void ReloadConfig()
+    {
+        // Calculate and save a new hash, and then reload the actual config settings
+        // There are definitely ways this could be optimized to avoid computing hashes twice, but I'm not going to worry since configs won't be changing often
+        LastHash = CalculateConfigHash();
+        Config.Reload();
+    }
+}
