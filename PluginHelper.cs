@@ -32,6 +32,12 @@ public class PluginHelper
 
     public bool NeedToReloadConfig()
     {
+        // If the config file doesn't exist (due to having no config options), then always return false
+        if (!File.Exists(ConfigFilePath))
+        {
+            return false;
+        }
+
         // The config should be reloaded if the new hash doesn't match the old one
         var newHash = CalculateConfigHash();
         return !newHash.SequenceEqual(LastHash);
