@@ -44,6 +44,7 @@ public class Tracker
         {
             var helper = new PluginHelper(plugin);
             PluginHelpers.Add(helper);
+            Plugin.Logger.LogInfo($"Found config file: {helper.Plugin.Config.ConfigFilePath}");
         }
     }
 
